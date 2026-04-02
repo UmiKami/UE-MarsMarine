@@ -3,6 +3,8 @@
 
 #include "Pawns/MM_AlienBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AMM_AlienBase::AMM_AlienBase()
@@ -16,6 +18,17 @@ void AMM_AlienBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AMM_AlienBase::DamagePlayer()
+{
+		UGameplayStatics::ApplyDamage(
+			UGameplayStatics::GetPlayerCharacter(this, 0),
+			DamagePerHit,
+			GetController(),
+			this,
+			nullptr
+		);
 }
 
 // Called every frame

@@ -21,6 +21,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
+	UFUNCTION(BlueprintCallable)
+	void DamagePlayer();
 	
+private:
+	UPROPERTY(EditDefaultsOnly)
+	float DamagePerHit = 5.f;
 };
