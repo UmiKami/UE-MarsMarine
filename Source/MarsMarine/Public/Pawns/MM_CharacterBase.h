@@ -22,4 +22,18 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* FireAction;
+	UPROPERTY(VisibleAnywhere, Category="VFX")
+	TObjectPtr<UNiagaraComponent> NiagaraMuzzleFlash;
+	
+	UPROPERTY(EditDefaultsOnly, Category="SFX")
+	TObjectPtr<USoundBase> RifleShotSound;
+	
+	UPROPERTY(EditDefaultsOnly, Category="SFX")
+	TObjectPtr<USoundBase> EndRifleShotSound;
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> SpawnedRifleShotAudioComponent;
+	void StartFiringWeapon(const FInputActionValue& Value);
+	void StopFiringWeapon(const FInputActionValue& Value);
 };
