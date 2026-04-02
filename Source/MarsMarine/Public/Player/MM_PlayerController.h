@@ -17,7 +17,10 @@ UCLASS()
 class MARSMARINE_API AMM_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	AMM_PlayerController() ;
+
 protected:
 	UPROPERTY(EditAnywhere, Category ="Input|Input Mappings")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;

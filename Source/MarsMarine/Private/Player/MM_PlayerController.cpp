@@ -6,6 +6,11 @@
 #include "InputMappingContext.h"
 
 
+AMM_PlayerController::AMM_PlayerController()
+{
+	bShowMouseCursor = true;
+}
+
 void AMM_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
