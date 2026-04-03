@@ -36,6 +36,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAlive() const {return !IsDead;}
 	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void IncrementEnemyKillCount() {EnemiesKilled++;}
+	
 	UPROPERTY(BlueprintReadWrite, Category="Player Status")
 	bool IsDead = false;
 	
@@ -77,7 +80,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
 	float WeaponFireRate = 0.08f;
-	
+
 
 private:
 	FTimerHandle WeaponTraceFireRateTimer;
