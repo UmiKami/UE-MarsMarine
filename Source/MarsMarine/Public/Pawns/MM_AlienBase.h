@@ -14,10 +14,7 @@ class MARSMARINE_API AMM_AlienBase : public ACharacter, public IMM_EnemyInterfac
 
 public:
 	AMM_AlienBase();
-	
-	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -25,7 +22,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void DamagePlayer();
 	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 private:
 	UPROPERTY(EditDefaultsOnly)
 	float DamagePerHit = 5.f;
+	
+	UPROPERTY(EditDefaultsOnly)
+	float Health = 100.f;
+	
+	// TODO: Consider adding MaxHealth to avoid hardcoding max value when clamping health.
 };

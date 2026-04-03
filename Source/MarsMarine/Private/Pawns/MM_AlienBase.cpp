@@ -6,14 +6,11 @@
 #include "Kismet/GameplayStatics.h"
 
 
-// Sets default values
 AMM_AlienBase::AMM_AlienBase()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AMM_AlienBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -31,15 +28,11 @@ void AMM_AlienBase::DamagePlayer()
 		);
 }
 
-// Called every frame
-void AMM_AlienBase::Tick(float DeltaTime)
+float AMM_AlienBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::Tick(DeltaTime);
+	Health = FMath::Clamp(Health - DamageAmount, 0, 100.f);
+	
+	if (Health == 0) Destroy();
+	
+	return DamageAmount;
 }
-
-// Called to bind functionality to input
-void AMM_AlienBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
