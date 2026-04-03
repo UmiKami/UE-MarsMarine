@@ -190,6 +190,7 @@ float AMM_CharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		IsDead = true;
 		StopFiringWeapon({});
 		GetMovementComponent()->Deactivate();
+		PlayerDiedSignature.Broadcast(true);
 	}
 	
 	return DamageAmount;

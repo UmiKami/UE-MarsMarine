@@ -11,6 +11,8 @@ class UInputAction;
 class AMM_PlayerController;
 class UNiagaraComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerDeathSignature, bool, IsDead);
+
 UCLASS()
 class MARSMARINE_API AMM_CharacterBase : public ACharacter
 {
@@ -41,6 +43,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Category="Player Status")
 	bool IsDead = false;
+	
+	UPROPERTY(BlueprintAssignable, Category="Player Status")
+	FPlayerDeathSignature PlayerDiedSignature;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MoveForwardBackwardAction;
