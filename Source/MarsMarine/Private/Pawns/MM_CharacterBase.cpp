@@ -72,6 +72,8 @@ void AMM_CharacterBase::MoveLeftRight(const FInputActionValue& Value)
 
 void AMM_CharacterBase::LookAtCursorPosition(float DeltaTime)
 {
+	if (IsDead) return;
+	
 	if (!MPlayerController)
 	{
 		MPlayerController = Cast<AMM_PlayerController>(GetController());
@@ -111,7 +113,8 @@ void AMM_CharacterBase::LookAtCursorPosition(float DeltaTime)
 void AMM_CharacterBase::StartFiringWeapon(const FInputActionValue& Value)
 {
 	// VFX
-	if (!NiagaraMuzzleFlash) return;
+	if (!NiagaraMuzzleFlash || IsDead) return;
+	
 	NiagaraMuzzleFlash->Activate();
 	
 	// Sound
@@ -137,6 +140,23 @@ void AMM_CharacterBase::StopFiringWeapon(const FInputActionValue& Value)
 	if (!SpawnedRifleShotAudioComponent) return;
 	
 	SpawnedRifleShotAudioComponent->Stop();
+	
+	if (IsDead) return; 
+	
 	SpawnedRifleShotAudioComponent->SetSound(EndRifleShotSound);
 	SpawnedRifleShotAudioComponent->Play();
+}
+
+float AMM_CharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Health = FMath::Clamp(Health - DamageAmount, 0, 100);
+	
+	if (Health == 0)
+	{
+		IsDead = true;
+		StopFiringWeapon({});
+		GetMovementComponent()->Deactivate();
+	}
+	
+	return DamageAmount;
 }

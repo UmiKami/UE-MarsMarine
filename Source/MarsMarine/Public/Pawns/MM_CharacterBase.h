@@ -31,6 +31,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsAlive() const {return !IsDead;}
+	
+	UPROPERTY(BlueprintReadWrite, Category="Player Status")
+	bool IsDead = false;
+	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MoveForwardBackwardAction;
 	
