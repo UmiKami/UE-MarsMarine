@@ -9,7 +9,7 @@
 
 AMM_AlienBase::AMM_AlienBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AMM_AlienBase::BeginPlay()
@@ -44,7 +44,11 @@ float AMM_AlienBase::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 void AMM_AlienBase::KillAI()
 {
 	IsDead = true;
-	GetMovementComponent()->Deactivate();
+	UPawnMovementComponent* MovementComponent = GetMovementComponent();
+	
+	MovementComponent->StopMovementImmediately();
+	MovementComponent->Deactivate();
+	
 	SetActorEnableCollision(false);
 	AlienIsDeadSignature.Broadcast(true);
 }
