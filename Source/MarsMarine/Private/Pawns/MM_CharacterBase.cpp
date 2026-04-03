@@ -156,10 +156,15 @@ void AMM_CharacterBase::StartFiringWeapon(const FInputActionValue& Value)
 	SpawnedRifleShotAudioComponent->Play();
 	
 	WeaponTrace();
+	
+	GetWorldTimerManager().SetTimer(WeaponTraceFireRateTimer, this, &ThisClass::WeaponTrace, WeaponFireRate, true, WeaponFireRate);
 }
 
 void AMM_CharacterBase::StopFiringWeapon(const FInputActionValue& Value)
 {
+	
+	GetWorldTimerManager().ClearTimer(WeaponTraceFireRateTimer);
+	
 	// VFX
 	if (!NiagaraMuzzleFlash) return;
 

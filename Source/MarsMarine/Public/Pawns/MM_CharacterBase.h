@@ -74,8 +74,14 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
 	float WeaponDamage = 25.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
+	float WeaponFireRate = 0.08f;
+	
 
 private:
+	FTimerHandle WeaponTraceFireRateTimer;
+	
 	UPROPERTY()
 	TObjectPtr<AMM_PlayerController> MPlayerController;
 	
