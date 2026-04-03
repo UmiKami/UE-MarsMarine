@@ -7,6 +7,8 @@
 #include "Interaction/MM_EnemyInterface.h"
 #include "MM_AlienBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAlienDeathSignature, bool, IsDead);
+
 UCLASS()
 class MARSMARINE_API AMM_AlienBase : public ACharacter, public IMM_EnemyInterface
 {
@@ -21,8 +23,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void DamagePlayer();
-	
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
+	UPROPERTY(BlueprintReadOnly)
+	bool IsDead = false;
+	
+	UPROPERTY(BlueprintAssignable)
+	FAlienDeathSignature AlienIsDeadSignature;
 	
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -32,4 +40,6 @@ private:
 	float Health = 100.f;
 	
 	// TODO: Consider adding MaxHealth to avoid hardcoding max value when clamping health.
+	
+	void KillAI();
 };

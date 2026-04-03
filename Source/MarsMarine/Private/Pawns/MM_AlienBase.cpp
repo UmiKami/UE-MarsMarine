@@ -3,6 +3,7 @@
 
 #include "Pawns/MM_AlienBase.h"
 
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -32,7 +33,18 @@ float AMM_AlienBase::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 {
 	Health = FMath::Clamp(Health - DamageAmount, 0, 100.f);
 	
-	if (Health == 0) Destroy();
+	if (Health == 0)
+	{
+		KillAI();
+	}
 	
 	return DamageAmount;
+}
+
+void AMM_AlienBase::KillAI()
+{
+	IsDead = true;
+	GetMovementComponent()->Deactivate();
+	SetActorEnableCollision(false);
+	AlienIsDeadSignature.Broadcast(true);
 }
