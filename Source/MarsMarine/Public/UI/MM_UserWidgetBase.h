@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MM_UserWidgetBase.generated.h"
 
+class AMM_MarsGameMode;
 class AMM_CharacterBase;
 /**
  * 
@@ -17,8 +18,12 @@ class MARSMARINE_API UMM_UserWidgetBase : public UUserWidget
 	
 public:
 	void SetMarineCharacter(AMM_CharacterBase* MarineCharacter);
+	void SetMarsGameMode(AMM_MarsGameMode* MarsGameMode);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AMM_CharacterBase> Marine;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<AMM_MarsGameMode> MarsGameMode;
 };

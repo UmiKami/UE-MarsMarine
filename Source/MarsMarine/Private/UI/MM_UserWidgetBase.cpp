@@ -7,3 +7,8 @@ void UMM_UserWidgetBase::SetMarineCharacter(AMM_CharacterBase* MarineCharacter)
 {
 	Marine = MarineCharacter;
 }
+
+void UMM_UserWidgetBase::SetMarsGameMode(AMM_MarsGameMode* MarsGameMode)
+{
+	this->MarsGameMode = MarsGameMode;
+}

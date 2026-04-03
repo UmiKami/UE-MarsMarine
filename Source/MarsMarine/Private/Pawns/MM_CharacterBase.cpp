@@ -4,6 +4,7 @@
 #include "NiagaraComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/AudioComponent.h"
+#include "Game/MM_MarsGameMode.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Interaction/MM_EnemyInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,6 +24,8 @@ void AMM_CharacterBase::SetupPlayerHUD()
 	UMM_UserWidgetBase* MarineUserWidgetHUD = Cast<UMM_UserWidgetBase>(PlayerHUD);
 	
 	MarineUserWidgetHUD->SetMarineCharacter(this);
+	MarineUserWidgetHUD->SetMarsGameMode(CastChecked<AMM_MarsGameMode>(UGameplayStatics::GetGameMode(this)));
+	
 	MarineUserWidgetHUD->AddToViewport();
 }
 
