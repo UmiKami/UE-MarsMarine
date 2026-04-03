@@ -71,6 +71,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
 	float WeaponRange = 5000.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
+	float WeaponDamage = 25.f;
 
 private:
 	UPROPERTY()

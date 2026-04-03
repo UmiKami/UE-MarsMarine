@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Interaction/MM_EnemyInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/MM_PlayerController.h"
@@ -40,6 +41,13 @@ void AMM_CharacterBase::WeaponTrace()
 	Params.AddIgnoredActor(this);
 	
 	UKismetSystemLibrary::LineTraceSingle(this, Start, End, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {this}, EDrawDebugTrace::ForDuration, OutHit, true, FColor::Red, FColor::Green, 5.f);
+
+	AActor* DamagedActor = OutHit.GetActor();
+	
+	if (OutHit.bBlockingHit && DamagedActor->Implements<UMM_EnemyInterface>())
+	{
+		UGameplayStatics::ApplyDamage(DamagedActor, WeaponDamage, GetController(), this, {});
+	}
 }
 
 void AMM_CharacterBase::BeginPlay()
