@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interaction/MM_EnemyInterface.h"
 #include "MM_AlienBase.generated.h"
 
 UCLASS()
-class MARSMARINE_API AMM_AlienBase : public ACharacter
+class MARSMARINE_API AMM_AlienBase : public ACharacter, public IMM_EnemyInterface
 {
 	GENERATED_BODY()
 
