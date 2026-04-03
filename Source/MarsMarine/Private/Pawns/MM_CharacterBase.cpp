@@ -1,8 +1,10 @@
 #include "Pawns/MM_CharacterBase.h"
 #include "EnhancedInputComponent.h"
+#include "KismetTraceUtils.h"
 #include "NiagaraComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/MM_PlayerController.h"
@@ -21,6 +23,23 @@ void AMM_CharacterBase::SetupPlayerHUD()
 	
 	MarineUserWidgetHUD->SetMarineCharacter(this);
 	MarineUserWidgetHUD->AddToViewport();
+}
+
+void AMM_CharacterBase::WeaponTrace()
+{
+	USkeletalMeshComponent* Rifle = FindComponentByTag<USkeletalMeshComponent>( "rifle");
+	
+	if (!Rifle) return;
+	
+	FHitResult OutHit;
+	
+	FVector Start = Rifle->GetSocketLocation("MuzzleFlashSocket");
+	FVector End = Start + GetActorForwardVector() * WeaponRange;
+	
+	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam; 
+	Params.AddIgnoredActor(this);
+	
+	UKismetSystemLibrary::LineTraceSingle(this, Start, End, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {this}, EDrawDebugTrace::ForDuration, OutHit, true, FColor::Red, FColor::Green, 5.f);
 }
 
 void AMM_CharacterBase::BeginPlay()
@@ -127,6 +146,8 @@ void AMM_CharacterBase::StartFiringWeapon(const FInputActionValue& Value)
 
 	SpawnedRifleShotAudioComponent->SetSound(RifleShotSound);
 	SpawnedRifleShotAudioComponent->Play();
+	
+	WeaponTrace();
 }
 
 void AMM_CharacterBase::StopFiringWeapon(const FInputActionValue& Value)

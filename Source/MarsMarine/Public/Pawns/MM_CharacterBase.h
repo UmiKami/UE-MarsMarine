@@ -69,6 +69,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
 	int32 EnemiesKilled;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
+	float WeaponRange = 5000.f;
+
 private:
 	UPROPERTY()
 	TObjectPtr<AMM_PlayerController> MPlayerController;
@@ -83,4 +86,7 @@ private:
 	void StopFiringWeapon(const FInputActionValue& Value);
 	
 	void SetupPlayerHUD();
+	
+	UFUNCTION(BlueprintCallable)
+	void WeaponTrace();
 };
