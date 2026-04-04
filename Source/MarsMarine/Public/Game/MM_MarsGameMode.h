@@ -6,6 +6,9 @@
 #include "GameFramework/GameMode.h"
 #include "MM_MarsGameMode.generated.h"
 
+class AMM_AlienBase;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAlienSpawnWaveSignature);
+
 /**
  * 
  */
@@ -22,12 +25,39 @@ protected:
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
-	void SetupNewWave();
+	void StartNewWave();
+	
+	void EndWave();
+	
+	UFUNCTION(BlueprintCallable)
+	void TrySpawningNextWave();
+	
+	UFUNCTION()
+	void SpawnWaveTimerAction();
+	
+	UFUNCTION()
+	void IncreaseWaveDifficulty();
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 WaveDifficulty = 5;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float DifficultyMultiplier = 1.2f;
+	
+	UPROPERTY(BlueprintAssignable)
+	FAlienSpawnWaveSignature SpawnWaveSignature;
+	
+	UPROPERTY(BlueprintReadWrite)
+	TArray<TObjectPtr<AMM_AlienBase>> RemainingAliens;
+	
+	UPROPERTY(BlueprintReadWrite)
+	int32 AlienSpawnsRemaining = 10;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float StartDelay = 2.f;
 	
-	int32 CurrentWave = 1;
+	int32 CurrentWave = 0;
 	
 	FTimerHandle GameStartDelayTimer;
+	FTimerHandle SpawnWaveTimer;
 };
