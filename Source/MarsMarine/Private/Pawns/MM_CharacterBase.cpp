@@ -1,6 +1,6 @@
 #include "Pawns/MM_CharacterBase.h"
 #include "EnhancedInputComponent.h"
-#include "KismetTraceUtils.h"
+#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/AudioComponent.h"
@@ -35,7 +35,7 @@ void AMM_CharacterBase::WeaponTrace()
 	
 	if (!Rifle) return;
 	
-	FHitResult OutHit;
+	FHitResult HitResult;
 	
 	FVector Start = Rifle->GetSocketLocation("MuzzleFlashSocket");
 	FVector End = Start + GetActorForwardVector() * WeaponRange;
@@ -43,11 +43,13 @@ void AMM_CharacterBase::WeaponTrace()
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam; 
 	Params.AddIgnoredActor(this);
 	
-	UKismetSystemLibrary::LineTraceSingle(this, Start, End, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {this}, EDrawDebugTrace::ForDuration, OutHit, true, FColor::Red, FColor::Green, 5.f);
+	UKismetSystemLibrary::LineTraceSingle(this, Start, End, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {this}, EDrawDebugTrace::None, HitResult, true, FColor::Red, FColor::Green, 5.f);
 
-	AActor* DamagedActor = OutHit.GetActor();
+	AActor* DamagedActor = HitResult.GetActor();
 	
-	if (OutHit.bBlockingHit && DamagedActor->Implements<UMM_EnemyInterface>())
+	HitResult.bBlockingHit && UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, HitResult.ImpactPoint);
+	
+	if (HitResult.bBlockingHit && DamagedActor->Implements<UMM_EnemyInterface>())
 	{
 		UGameplayStatics::ApplyDamage(DamagedActor, WeaponDamage, GetController(), this, {});
 	}

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MM_CharacterBase.generated.h"
 
+class UNiagaraSystem;
 struct FInputActionValue;
 class UInputAction;
 class AMM_PlayerController;
@@ -40,6 +41,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void IncrementEnemyKillCount() {EnemiesKilled++;}
+	
+	UPROPERTY(EditDefaultsOnly)
+	UNiagaraSystem* ImpactEffect;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Player Status")
 	bool IsDead = false;
