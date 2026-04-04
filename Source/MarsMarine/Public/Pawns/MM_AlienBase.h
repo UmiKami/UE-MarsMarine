@@ -7,7 +7,9 @@
 #include "Interaction/MM_EnemyInterface.h"
 #include "MM_AlienBase.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAlienDeathSignature, bool, IsDead);
+class AMM_AlienBase;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAlienDeathSignature, bool, IsDead, AMM_AlienBase*, AlienInstance);
 
 UCLASS()
 class MARSMARINE_API AMM_AlienBase : public ACharacter, public IMM_EnemyInterface

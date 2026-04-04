@@ -50,5 +50,5 @@ void AMM_AlienBase::KillAI()
 	MovementComponent->Deactivate();
 	
 	SetActorEnableCollision(false);
-	AlienIsDeadSignature.Broadcast(true);
+	AlienIsDeadSignature.Broadcast(true, this);
 }
