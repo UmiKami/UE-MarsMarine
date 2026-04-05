@@ -31,10 +31,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetEnemiesKilledCount() const {return EnemiesKilled;}
 	
+	UFUNCTION(BlueprintCallable)
 	void AddHealth(float InHealth);
 	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsPlayerHealthFull() const {return Health == MaxHealth;}
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,6 +48,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void IncrementEnemyKillCount() {EnemiesKilled++;}
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bOutsideMissionArea = false;
 	
 	UPROPERTY(EditDefaultsOnly)
 	UNiagaraSystem* ImpactEffect;
