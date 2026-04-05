@@ -30,6 +30,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetEnemiesKilledCount() const {return EnemiesKilled;}
+	
+	void AddHealth(float InHealth);
 
 protected:
 	virtual void BeginPlay() override;

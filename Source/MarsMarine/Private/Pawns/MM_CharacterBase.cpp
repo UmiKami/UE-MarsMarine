@@ -55,6 +55,11 @@ void AMM_CharacterBase::WeaponTrace()
 	}
 }
 
+void AMM_CharacterBase::AddHealth(const float InHealth)
+{
+	Health = FMath::Clamp(Health + InHealth, 0, 100);
+}
+
 void AMM_CharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
