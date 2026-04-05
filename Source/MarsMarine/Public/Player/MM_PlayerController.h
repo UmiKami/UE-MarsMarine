@@ -22,8 +22,9 @@ public:
 	AMM_PlayerController() ;
 
 protected:
+	virtual void SetupInputComponent() override;
+	
 	UPROPERTY(EditAnywhere, Category ="Input|Input Mappings")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 	
-	virtual void SetupInputComponent() override;
 };

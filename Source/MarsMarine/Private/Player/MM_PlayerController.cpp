@@ -4,6 +4,7 @@
 #include "Player/MM_PlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "Blueprint/UserWidget.h"
 
 
 AMM_PlayerController::AMM_PlayerController()
@@ -23,3 +24,4 @@ void AMM_PlayerController::SetupInputComponent()
 		}
 	}
 }
+
