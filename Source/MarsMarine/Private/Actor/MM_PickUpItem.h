@@ -20,10 +20,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UNiagaraComponent* ItemParticle;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USphereComponent* SphereCollision;
 	
 	UFUNCTION(BlueprintImplementableEvent)
