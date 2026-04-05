@@ -32,6 +32,9 @@ public:
 	FORCEINLINE int32 GetEnemiesKilledCount() const {return EnemiesKilled;}
 	
 	void AddHealth(float InHealth);
+	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsPlayerHealthFull() const {return Health == MaxHealth;}
 
 protected:
 	virtual void BeginPlay() override;
