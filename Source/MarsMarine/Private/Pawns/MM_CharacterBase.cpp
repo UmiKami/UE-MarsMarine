@@ -18,60 +18,6 @@ AMM_CharacterBase::AMM_CharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AMM_CharacterBase::SetupPlayerHUD()
-{
-	UUserWidget* PlayerHUD = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDClass);
-	UMM_UserWidgetBase* MarineUserWidgetHUD = Cast<UMM_UserWidgetBase>(PlayerHUD);
-	
-	MarineUserWidgetHUD->SetMarineCharacter(this);
-	MarineUserWidgetHUD->SetMarsGameMode(CastChecked<AMM_MarsGameMode>(UGameplayStatics::GetGameMode(this)));
-	
-	MarineUserWidgetHUD->AddToViewport();
-}
-
-void AMM_CharacterBase::WeaponTrace()
-{
-	USkeletalMeshComponent* Rifle = FindComponentByTag<USkeletalMeshComponent>( "rifle");
-	
-	if (!Rifle) return;
-	
-	FHitResult HitResult;
-	
-	FVector Start = Rifle->GetSocketLocation("MuzzleFlashSocket");
-	FVector End = Start + GetActorForwardVector() * WeaponRange;
-	
-	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam; 
-	Params.AddIgnoredActor(this);
-	
-	UKismetSystemLibrary::LineTraceSingle(this, Start, End, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {this}, EDrawDebugTrace::None, HitResult, true, FColor::Red, FColor::Green, 5.f);
-
-	AActor* DamagedActor = HitResult.GetActor();
-	
-	HitResult.bBlockingHit && UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, HitResult.ImpactPoint);
-	
-	if (HitResult.bBlockingHit && DamagedActor->Implements<UMM_EnemyInterface>())
-	{
-		UGameplayStatics::ApplyDamage(DamagedActor, WeaponDamage, GetController(), this, {});
-	}
-}
-
-void AMM_CharacterBase::AddHealth(const float InHealth)
-{
-	Health = FMath::Clamp(Health + InHealth, 0, 100);
-}
-
-void AMM_CharacterBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (!NiagaraMuzzleFlash)
-	{
-		NiagaraMuzzleFlash = FindComponentByTag<UNiagaraComponent>("MuzzleFlash");
-	}
-	
-	SetupPlayerHUD();
-}
-
 void AMM_CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -92,6 +38,38 @@ void AMM_CharacterBase::Tick(float DeltaSeconds)
 	LookAtCursorPosition(DeltaSeconds);
 }
 
+void AMM_CharacterBase::AddHealth(const float InHealth)
+{
+	Health = FMath::Clamp(Health + InHealth, 0, MaxHealth);
+}
+
+void AMM_CharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!NiagaraMuzzleFlash)
+	{
+		NiagaraMuzzleFlash = FindComponentByTag<UNiagaraComponent>("MuzzleFlash");
+	}
+
+	SetInitialStats();
+	SetupPlayerHUD();
+}
+
+float AMM_CharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Health = FMath::Clamp(Health - DamageAmount, 0, MaxHealth);
+	
+	if (Health == 0)
+	{
+		IsDead = true;
+		StopFiringWeapon({});
+		GetMovementComponent()->Deactivate();
+		PlayerDiedSignature.Broadcast(true);
+	}
+	
+	return DamageAmount;
+}
 
 void AMM_CharacterBase::MoveForwardsBackwards(const FInputActionValue& Value)
 {
@@ -106,6 +84,7 @@ void AMM_CharacterBase::MoveLeftRight(const FInputActionValue& Value)
 
 	AddMovementInput({0, 1, 0}, ScaleValue);
 }
+
 
 void AMM_CharacterBase::LookAtCursorPosition(float DeltaTime)
 {
@@ -191,17 +170,44 @@ void AMM_CharacterBase::StopFiringWeapon(const FInputActionValue& Value)
 	SpawnedRifleShotAudioComponent->Play();
 }
 
-float AMM_CharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+void AMM_CharacterBase::SetupPlayerHUD()
 {
-	Health = FMath::Clamp(Health - DamageAmount, 0, 100);
+	UUserWidget* PlayerHUD = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDClass);
+	UMM_UserWidgetBase* MarineUserWidgetHUD = Cast<UMM_UserWidgetBase>(PlayerHUD);
 	
-	if (Health == 0)
+	MarineUserWidgetHUD->SetMarineCharacter(this);
+	MarineUserWidgetHUD->SetMarsGameMode(CastChecked<AMM_MarsGameMode>(UGameplayStatics::GetGameMode(this)));
+	
+	MarineUserWidgetHUD->AddToViewport();
+}
+
+void AMM_CharacterBase::SetInitialStats()
+{
+	Health = MaxHealth;
+}
+
+void AMM_CharacterBase::WeaponTrace()
+{
+	USkeletalMeshComponent* Rifle = FindComponentByTag<USkeletalMeshComponent>( "rifle");
+	
+	if (!Rifle) return;
+	
+	FHitResult HitResult;
+	
+	FVector Start = Rifle->GetSocketLocation("MuzzleFlashSocket");
+	FVector End = Start + GetActorForwardVector() * WeaponRange;
+	
+	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam; 
+	Params.AddIgnoredActor(this);
+	
+	UKismetSystemLibrary::LineTraceSingle(this, Start, End, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {this}, EDrawDebugTrace::None, HitResult, true, FColor::Red, FColor::Green, 5.f);
+
+	AActor* DamagedActor = HitResult.GetActor();
+	
+	HitResult.bBlockingHit && UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, HitResult.ImpactPoint);
+	
+	if (HitResult.bBlockingHit && DamagedActor->Implements<UMM_EnemyInterface>())
 	{
-		IsDead = true;
-		StopFiringWeapon({});
-		GetMovementComponent()->Deactivate();
-		PlayerDiedSignature.Broadcast(true);
+		UGameplayStatics::ApplyDamage(DamagedActor, WeaponDamage, GetController(), this, {});
 	}
-	
-	return DamageAmount;
 }

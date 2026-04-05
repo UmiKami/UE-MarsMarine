@@ -81,6 +81,9 @@ protected:
 	float Health;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
+	float MaxHealth = 100.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
 	int32 EnemiesKilled;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Stats")
@@ -109,6 +112,7 @@ private:
 	void StopFiringWeapon(const FInputActionValue& Value);
 	
 	void SetupPlayerHUD();
+	void SetInitialStats();
 	
 	UFUNCTION(BlueprintCallable)
 	void WeaponTrace();
