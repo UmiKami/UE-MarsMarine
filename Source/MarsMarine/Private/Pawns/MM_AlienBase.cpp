@@ -3,6 +3,10 @@
 
 #include "Pawns/MM_AlienBase.h"
 
+#include "UHelper.h"
+#include "Components/WidgetComponent.h"
+#include "Game/MM_MarsGameMode.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -10,12 +14,14 @@
 AMM_AlienBase::AMM_AlienBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	AlienHealthBarWidget = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	AlienHealthBarWidget->SetupAttachment(RootComponent);
 }
 
 void AMM_AlienBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 
 
 	if (const AMM_MarsGameMode* MGameMode = Cast<AMM_MarsGameMode>(UGameplayStatics::GetGameMode(this)))
@@ -36,24 +42,27 @@ void AMM_AlienBase::BeginPlay()
 
 void AMM_AlienBase::DamagePlayer()
 {
-		UGameplayStatics::ApplyDamage(
-			UGameplayStatics::GetPlayerCharacter(this, 0),
-			DamagePerHit,
-			GetController(),
-			this,
-			nullptr
-		);
+	
+	
+	UGameplayStatics::ApplyDamage(
+		UGameplayStatics::GetPlayerCharacter(this, 0),
+		DamagePerHit,
+		GetController(),
+		this,
+		nullptr
+	);
 }
 
 float AMM_AlienBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-	Health = FMath::Clamp(Health - DamageAmount, 0, 100.f);
-	
+	Health = FMath::Clamp(Health - DamageAmount, 0, MaxHealth);
+	AlienHasBeenHurt();
+
 	if (Health == 0)
 	{
 		KillAI();
 	}
-	
+
 	return DamageAmount;
 }
 
@@ -74,10 +83,10 @@ void AMM_AlienBase::KillAI()
 {
 	IsDead = true;
 	UPawnMovementComponent* MovementComponent = GetMovementComponent();
-	
+
 	MovementComponent->StopMovementImmediately();
 	MovementComponent->Deactivate();
-	
+
 	SetActorEnableCollision(false);
 	AlienIsDeadSignature.Broadcast(true, this);
 }
