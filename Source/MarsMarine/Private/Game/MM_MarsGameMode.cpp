@@ -16,11 +16,11 @@ void AMM_MarsGameMode::StartNewWave()
 	
 	WorldTimerManager.ClearTimer(GameStartDelayTimer);
 	
-	IncreaseWaveDifficulty();
-	
 	CurrentWave++;
 	
-	WorldTimerManager.SetTimer(SpawnWaveTimer,this, &ThisClass::SpawnWaveTimerAction,1.f, true);
+	IncreaseWaveDifficulty();
+	
+	WorldTimerManager.SetTimer(SpawnWaveTimer,this, &ThisClass::SpawnWaveTimerAction,SpawnRateDifficulty, true);
 }
 
 void AMM_MarsGameMode::EndWave()
@@ -51,6 +51,9 @@ void AMM_MarsGameMode::SpawnWaveTimerAction()
 void AMM_MarsGameMode::IncreaseWaveDifficulty()
 {
 	WaveDifficulty *= DifficultyMultiplier;
+	
+	SpawnRateDifficulty = SpawnRateDifficulty - CurrentWave / 100;
+	
 	AlienSpawnsRemaining = WaveDifficulty;
 }
 

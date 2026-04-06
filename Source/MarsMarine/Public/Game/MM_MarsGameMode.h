@@ -21,6 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString DisplayCurrentWave();
 	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetCurrentWave() const {return CurrentWave;}
+	
 protected:
 	virtual void BeginPlay() override;
 	
@@ -60,4 +63,7 @@ protected:
 	
 	FTimerHandle GameStartDelayTimer;
 	FTimerHandle SpawnWaveTimer;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float SpawnRateDifficulty = 1.f;
 };
