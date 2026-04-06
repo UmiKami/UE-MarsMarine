@@ -16,6 +16,22 @@ void AMM_AlienBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+
+
+	if (const AMM_MarsGameMode* MGameMode = Cast<AMM_MarsGameMode>(UGameplayStatics::GetGameMode(this)))
+	{
+		const int32 CurrentWave = MGameMode->GetCurrentWave();
+		
+		GetCharacterMovement()->MaxWalkSpeed = GetValueFromCurveTable("Speed", CurrentWave);
+		MaxHealth = GetValueFromCurveTable("MaxHealth", CurrentWave);
+		
+		Health = MaxHealth;
+		
+		DamagePerHit = GetValueFromCurveTable("DamagePerHit", CurrentWave);
+	}
+
+
+	AlienHasBeenHurt();
 }
 
 void AMM_AlienBase::DamagePlayer()
@@ -39,6 +55,19 @@ float AMM_AlienBase::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	}
 	
 	return DamageAmount;
+}
+
+float AMM_AlienBase::GetValueFromCurveTable(FName RowName, float Wave) const
+{
+	if (DifficultyCurve)
+	{
+		if (const FRealCurve* Curve = DifficultyCurve->FindCurve(RowName, TEXT("Row could not be find for alien curve table.")))
+		{
+			return Curve->Eval(Wave);
+		}
+	}
+
+	return 0.f;
 }
 
 void AMM_AlienBase::KillAI()

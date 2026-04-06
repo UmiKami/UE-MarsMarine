@@ -34,14 +34,14 @@ protected:
 	UPROPERTY(BlueprintAssignable)
 	FAlienDeathSignature AlienIsDeadSignature;
 	
+	
+	UPROPERTY(EditDefaultsOnly, Category="Diffculty Settings")
+	TObjectPtr<UCurveTable> DifficultyCurve;
 private:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Diffculty Settings")
 	float DamagePerHit = 5.f;
 	
-	UPROPERTY(EditDefaultsOnly)
-	float Health = 100.f;
-	
-	// TODO: Consider adding MaxHealth to avoid hardcoding max value when clamping health.
+	float GetValueFromCurveTable(FName RowName, float Wave) const;
 	
 	void KillAI();
 };
